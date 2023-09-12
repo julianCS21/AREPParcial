@@ -12,11 +12,12 @@ import java.net.Socket;
  *
  */
 public class HttpServer {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
 
 
         ServerSocket serverSocket = null;
         Page page = new Page();
+        consultaService cs = new consultaService();
         try {
             serverSocket = new ServerSocket(36000);
         } catch (IOException e) {
@@ -48,29 +49,29 @@ public class HttpServer {
                 }
                 if (!in.ready()) {break; }
             }
-            if(path.equals("ReflectiveChatGPT")){
+            if(path.startsWith("consulta")) {
+                String request = path.split("\\?")[1];
+                System.out.println(request);
+                String ClassforSearch = null;
+                String response = null;
+                String comando = request.split("=")[1].split("\\(")[0];
+                if(comando.equals("Class")){
+                    ClassforSearch = request.split("=")[1].split("\\(")[1].split("\\)")[0];
+                    response = cs.getClass(ClassforSearch);
+                }
+                String header = "HTTP/1.1 200 OK\r\n"
+                        + "Content-Type: text/html\r\n"
+                        + "\r\n";
+                outputLine = header + response;
+
+            }
+            else{
                 String header = "HTTP/1.1 200 OK\r\n"
                         + "Content-Type: text/html\r\n"
                         + "\r\n";
                 String pageGPT = page.getPage();
                 outputLine = header +  pageGPT;
 
-
-            }
-            else{
-                outputLine = "HTTP/1.1 200 OK\r\n"
-                        + "Content-Type: text/html\r\n"
-                        + "\r\n"
-                        + "<!DOCTYPE html>\n"
-                        + "<html>\n"
-                        + "<head>\n"
-                        + "<meta charset=\"UTF-8\">\n"
-                        + "<title>Title of the document</title>\n"
-                        + "</head>\n"
-                        + "<body>\n"
-                        + "<h1>Mi propio mensaje</h1>\n"
-                        + "</body>\n"
-                        + "</html>\n";
 
             }
 

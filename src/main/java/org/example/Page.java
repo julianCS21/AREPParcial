@@ -28,27 +28,8 @@ public class Page {
                                 document.getElementById("getrespmsg").innerHTML =
                                         this.responseText;
                             }
-                            xhttp.open("GET", "/hello?name="+nameVar);
+                            xhttp.open("GET", "/consulta?comando="+nameVar);
                             xhttp.send();
-                        }
-                        </script>
-
-                        <h1>Form with POST</h1>
-                        <form action="/hellopost">
-                            <label for="postname">Name:</label><br>
-                            <input type="text" id="postname" name="name" value="John"><br><br>
-                            <input type="button" value="Submit" onclick="loadPostMsg(postname)">
-                        </form>
-                        
-                        <div id="postrespmsg"></div>
-                        
-                        <script>
-                                function loadPostMsg(name){
-                            let url = "/hellopost?name=" + name.value;
-
-                            fetch (url, {method: 'POST'})
-                                    .then(x => x.text())
-                                    .then(y => document.getElementById("postrespmsg").innerHTML = y);
                         }
                         </script>
                     </body>
