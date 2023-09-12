@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -12,7 +13,7 @@ import java.net.Socket;
  *
  */
 public class HttpServer {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
 
         ServerSocket serverSocket = null;
@@ -54,10 +55,21 @@ public class HttpServer {
                 System.out.println(request);
                 String ClassforSearch = null;
                 String response = null;
+                String method = null;
                 String comando = request.split("=")[1].split("\\(")[0];
                 if(comando.equals("Class")){
                     ClassforSearch = request.split("=")[1].split("\\(")[1].split("\\)")[0];
                     response = cs.getClass(ClassforSearch);
+                }
+                else if(comando.equals("invoke")){
+                    ClassforSearch = request.split("=")[1].split("\\(")[1].split("\\)")[0].split(",")[0];
+                    method = request.split("=")[1].split("\\(")[1].split("\\)")[0].split(",")[1].replace("%20","");
+                    response = cs.invokeMethod(ClassforSearch,method);
+
+
+                }
+                else{
+                    response = "NO EXISTE ESTE COMANDO";
                 }
                 String header = "HTTP/1.1 200 OK\r\n"
                         + "Content-Type: text/html\r\n"
