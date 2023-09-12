@@ -53,6 +53,10 @@ public class HttpServer {
             if(path.startsWith("consulta")) {
                 String request = path.split("\\?")[1];
                 System.out.println(request);
+                String type = null;
+                String param1 = null;
+                String type2 = null;
+                String param2 = null;
                 String ClassforSearch = null;
                 String response = null;
                 String method = null;
@@ -66,6 +70,18 @@ public class HttpServer {
                     method = request.split("=")[1].split("\\(")[1].split("\\)")[0].split(",")[1].replace("%20","");
                     response = cs.invokeMethod(ClassforSearch,method);
 
+
+                }
+                else if(comando.equals("unaryInvoke")){
+                    ClassforSearch = request.split("=")[1].split("\\(")[1].split("\\)")[0].split(",")[0];
+                    method = request.split("=")[1].split("\\(")[1].split("\\)")[0].split(",")[1].replace("%20","");
+                    type = request.split("=")[1].split("\\(")[1].split("\\)")[0].split(",")[2].replace("%20","");
+                    param1 = request.split("=")[1].split("\\(")[1].split("\\)")[0].split(",")[3].replace("%20%22","").replace("%22","").replace("%20","");
+                    System.out.println(method);
+                    System.out.println(type);
+                    System.out.println(param1);
+
+                    response = cs.invokeMethodUnary(ClassforSearch,method,type,param1);
 
                 }
                 else{
