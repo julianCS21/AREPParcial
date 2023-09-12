@@ -13,7 +13,10 @@ import java.net.Socket;
  */
 public class HttpServer {
     public static void main(String[] args) throws IOException {
+
+
         ServerSocket serverSocket = null;
+        Page page = new Page();
         try {
             serverSocket = new ServerSocket(36000);
         } catch (IOException e) {
@@ -35,23 +38,42 @@ public class HttpServer {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
             String inputLine, outputLine;
+            String path = null;
+            boolean firstline = true;
             while ((inputLine = in.readLine()) != null) {
                 System.out.println("Recibí: " + inputLine);
+                if(firstline){
+                    path = inputLine.split("/")[1].split(" ")[0];
+                    firstline = false;
+                }
                 if (!in.ready()) {break; }
             }
-            outputLine = "HTTP/1.1 200 OK\r\n"
-                    + "Content-Type: text/html\r\n"
-                    + "\r\n"
-                    + "<!DOCTYPE html>\n"
-                    + "<html>\n"
-                    + "<head>\n"
-                    + "<meta charset=\"UTF-8\">\n"
-                    + "<title>Title of the document</title>\n"
-                    + "</head>\n"
-                    + "<body>\n"
-                    + "<h1>Mi propio mensaje</h1>\n"
-                    + "</body>\n"
-                    + "</html>\n";
+            if(path.equals("ReflectiveChatGPT")){
+                String header = "HTTP/1.1 200 OK\r\n"
+                        + "Content-Type: text/html\r\n"
+                        + "\r\n";
+                String pageGPT = page.getPage();
+                outputLine = header +  pageGPT;
+
+
+            }
+            else{
+                outputLine = "HTTP/1.1 200 OK\r\n"
+                        + "Content-Type: text/html\r\n"
+                        + "\r\n"
+                        + "<!DOCTYPE html>\n"
+                        + "<html>\n"
+                        + "<head>\n"
+                        + "<meta charset=\"UTF-8\">\n"
+                        + "<title>Title of the document</title>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "<h1>Mi propio mensaje</h1>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+            }
+
             out.println(outputLine);
             out.close();
             in.close();
